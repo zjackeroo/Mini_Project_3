@@ -52,7 +52,7 @@ export function StackedAreaChart(container) {
 	function update(_data){
         data = _data;
 
-        var keys = selected? [selected] : data.columns.slice(1); //first value is the date
+        var keys = selected ? [selected] : data.columns.slice(1); //first value is the date
         var stack = d3.stack()
             .keys(keys)
             .order(d3.stackOrderNone)
@@ -67,9 +67,9 @@ export function StackedAreaChart(container) {
         ]);
 
         const area = d3.area()
-            .x(d=>xScale(d.data.date))
-            .y0(d=>yScale(d[0]))
-            .y1(d=>yScale(d[1]));
+                       .x(d=>xScale(d.data.year))
+                       .y0(d=>yScale(d[0]))
+                       .y1(d=>yScale(d[1]));
         
         const areas = svg.selectAll(".area")
             .data(series, d => d.key);
