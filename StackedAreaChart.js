@@ -1,37 +1,33 @@
 export function StackedAreaChart(container) {
+
     const margin = ({top: 20, right: 20, bottom: 40, left: 50});
-    const w = 650 - margin.left - margin.right;
-    const h = 400 - margin.top - margin.bottom;
+    const width = 650 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
 
     const svg = d3.selectAll(container)
-        .append("svg")
-        .attr("width", w + margin.left + margin.right)
-        .attr("height", h + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                  .append("svg")
+                  .attr("width", width + margin.left + margin.right)
+                  .attr("height", height + margin.top + margin.bottom)
+                  .append("g")
+                  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    const xScale = d3
-        .scaleTime()
-        .range([0,w])
-    
-    const yScale = d3
-        .scaleLinear()
-        .range([h,0])
+    const xScale = d3.scaleTime()
+                     .range([0,width])
+    const yScale = d3.scaleLinear()
+                     .range([height,0])
     
     const typeScale = d3.scaleOrdinal()
-        .range(d3.schemeTableau10);
+                        .range(d3.schemeTableau10);
     
     const xAxis = d3.axisBottom()
-        .scale(xScale);
-    
+                    .scale(xScale);
     const yAxis = d3.axisLeft()
-        .scale(yScale);
+                    .scale(yScale);
 
-    var xAxisDisplay = svg.append("g")
-        .attr('class', 'axis x-axis');
-
-    var yAxisDisplay = svg.append('g')
-        .attr('class', 'axis y-axis');
+    var xAxisLabel = svg.append("g")
+                        .attr('class', 'axis x-axis');
+    var yAxisLabel = svg.append('g')
+                        .attr('class', 'axis y-axis');
 
     const tooltip = svg
         .append("text")
@@ -42,8 +38,8 @@ export function StackedAreaChart(container) {
     var clip = svg.append("clipPath")
         .attr("id", "chart-area")
         .append("rect")
-        .attr("width", w )
-        .attr("height", h )
+        .attr("width", width )
+        .attr("height", height )
         .attr("x", 0)
         .attr("y", 0);
   
@@ -82,13 +78,13 @@ export function StackedAreaChart(container) {
             .append("path")
             .attr("clip-path", "url(#chart-area)")
             .attr("class", "area")
-            .attr("id", function(d) { return "myArea " + d.key })
-            .style("fill", function(d) { return typeScale(d.key); })
-            .on("mouseover", (event, d, i) => tooltip.text(d.key))
-            .on("mouseout", (event, d, i) => tooltip.text(''))
+            .attr("id", (d)=>"myArea "+d.key)
+            .style("fill", (d)=>typeScale(d.key))
+            .on("mouseover", (event, d, i)=>tooltip.text(d.key))
+            .on("mouseout", () => tooltip.text(''))
             .on("click", (event, d) => {
                 if (selected === d.key) {
-                selected = null;
+                    selected = null;
                 } else {
                     selected = d.key;
                 }
@@ -97,16 +93,14 @@ export function StackedAreaChart(container) {
             .merge(areas)
             .attr("d", area);
         
-        console.log(areas.exit());
+        // console.log(areas.exit());
         areas.exit().remove();
         
-        xAxisDisplay
-            .call(xAxis)
-            .attr("transform", `translate(0, ${h})`);
-
-        yAxisDisplay
-            .call(yAxis);
+        xAxisLabel.call(xAxis)
+                  .attr("transform", `translate(0, ${height})`);
+        yAxisLabel.call(yAxis);
     }
+    
     function filterByDate(range){
 		xDomain = range;
 		update(data);
